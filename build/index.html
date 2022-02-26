@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <title>Co-graph</title>
+    <style>
+        body{
+            background-color: black;
+            text-align: center;
+        }
+        h1{
+        color:rgb(238, 30, 65) ;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-style: oblique;
+        }
+        p{
+            color:blue;
+            font-size: x-large;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-style: italic;
+        }
+        .myNetwork {
+             width: 60%;
+            height: 500px;
+            background-color: #000000;
+            border: 1px solid DarkSeaGreen;
+            position: relative;
+            float: left;
+            margin-left: 20%;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Generate Random Co-graphs using Twin Operation</h1>
+    <p id="p"></p>
+    <div class="myNetwork" id="myNetwork"></div>
+    <script>
+        //Declaring required
+var usedNodes= [];
+var usedNodesForNeighbouring= [];
+var allEdges= [];
+let neighbours = [
+	[],[],[],[],[]
+	];
+let edgesSets= [];
+let edgeCon= "{";
+let nodeSets= [
+        {"color": " YellowGreen","font": {"color": "black"}, id: 0, label: '0'},
+        {"color": "YellowGreen","font": {"color": "black"},id: 1, label: '1'},
+        {"color": "YellowGreen","font": {"color": "black"},id: 2, label: '2'},
+        {"color": "YellowGreen","font": {"color": "black"},id: 3, label: '3'},
+        {"color": "YellowGreen","font": {"color": "black"},id: 4, label: '4'},
+];
+
+
+
+//Creating Edges
+let randomVertice1= randomNumber(0, nodeSets.length);
+let randomVertice2= randomNumber(0,nodeSets.length);
+
+while(randomVertice1== randomVertice2){
+    randomVertice2= randomNumber(0,nodeSets.length);
+}
+
+edgesSets.push( {from: randomVertice1, to: randomVertice2} );
+edgeCon= edgeCon+"{" +randomVertice1 + ", " + randomVertice2 +"}" ;
+neighbours[randomVertice1].push(randomVertice2);
+neighbours[randomVertice2].push(randomVertice1);
+usedNodes.push(randomVertice1);
+usedNodes.push(randomVertice2);
+for( let g=0; g< nodeSets.length-2; g++){
+let randomVertice3= randomNumber(0,nodeSets.length);
+while (usedNodes.includes(randomVertice3))
+{
+	     randomVertice3= randomNumber(0,nodeSets.length);
+}
+let randomTwin= randomNumber(0,2);
+let randomNode= randomNumber(0, usedNodes.length);
+while (usedNodesForNeighbouring.includes(randomNode))
+{
+     randomNode= randomNumber(0, usedNodes.length);
+}
+usedNodes.push(randomVertice3);
+usedNodesForNeighbouring.push(randomNode);
+if( randomTwin==0){
+edgesSets.push( {from: randomVertice3, to: usedNodes[randomNode] } );
+edgeCon= edgeCon+",{" +randomVertice3 + ", " + usedNodes[randomNode]  +"}" ;
+neighbours[randomVertice3].push(usedNodes[randomNode]);
+for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++)
+{
+	  let nei= neighbours[usedNodes[randomNode]][m];
+	  edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
+	  edgeCon= edgeCon+",{" +randomVertice3 + ", " + neighbours[usedNodes[randomNode]][m] +"}" ;
+	  neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
+	  neighbours[nei].push(randomVertice3);
+}
+neighbours[usedNodes[randomNode]].push(randomVertice3);
+}
+else{
+	 for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++)
+	 {
+	  nei= neighbours[usedNodes[randomNode]][m];
+	  edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
+	  edgeCon= edgeCon+",{" +randomVertice3 + ", " + neighbours[usedNodes[randomNode]][m] +"}" ;
+	  neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
+	  neighbours[nei].push(randomVertice3);
+     }
+}
+edgeCon= edgeCon+ "}";
+}
+
+
+document.getElementById('p').textContent += "Below is the Graph with 5 nodes and " + edgesSets.length +" edges";
+
+// Setting up nodes and edges to display
+var nodes = new vis.DataSet(nodeSets);
+var edges = new vis.DataSet(edgesSets);
+
+
+
+// create a network
+var container = document.getElementById('myNetwork');
+    // provide the data in the vis format
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+
+
+var options = {
+    physics:{
+    enabled: true,
+    barnesHut: {
+      theta: 0.5,
+      gravitationalConstant: -2000,
+      centralGravity: 0.3,
+      springLength: 95,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 0
+    },
+    forceAtlas2Based: {
+      theta: 0.5,
+      gravitationalConstant: -50,
+      centralGravity: 0.01,
+      springConstant: 0.08,
+      springLength: 100,
+      damping: 0.4,
+      avoidOverlap: 0
+    },
+    repulsion: {
+      centralGravity: 0.2,
+      springLength: 200,
+      springConstant: 0.05,
+      nodeDistance: 100,
+      damping: 0.09
+    },
+    hierarchicalRepulsion: {
+      centralGravity: 0.0,
+      springLength: 100,
+      springConstant: 0.01,
+      nodeDistance: 120,
+      damping: 0.09,
+      avoidOverlap: 0
+    },
+    maxVelocity: 50,
+    minVelocity: 0.1,
+    solver: 'barnesHut',
+    stabilization: {
+      enabled: true,
+      iterations: 1000,
+      updateInterval: 100,
+      onlyDynamicEdges: false,
+      fit: true
+    },
+    timestep: 0.5,
+    adaptiveTimestep: true,
+    wind: { x: 0, y: 0 }
+  }
+}
+
+//Random Function
+function randomNumber(min, max){
+    const r = Math.random()*(max-min) + min
+    return Math.floor(r)
+}
+
+// initialize your network!
+var network = new vis.Network(container, data, options);
+    </script>
+</body>
+</html>
