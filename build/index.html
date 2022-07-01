@@ -1,195 +1,871 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <title>Co-graph</title>
-    <style>
-        body{
-            background-color: black;
-            text-align: center;
-        }
-        h1{
+      <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+      <style>
+          body{
+              background-color: black;
+              text-align: center;
+          }
+          h1{
+          color:rgb(238, 30, 65) ;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-style: oblique;
+          }
+      h2{
         color:rgb(238, 30, 65) ;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-style: oblique;
+        display: block;
+        position: relative;
+              float: left;
+              margin-left: 20%;
         }
-        p{
-            color:blue;
-            font-size: x-large;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-style: italic;
-        }
-        .myNetwork {
-             width: 60%;
-            height: 500px;
-            background-color: #000000;
-            border: 1px solid DarkSeaGreen;
-            position: relative;
-            float: left;
-            margin-left: 20%;
-        }
-    </style>
-  </head>
-
-
-  <body>
-    <h1>Generate Random Co-graphs using Twin Operation</h1>
-    <p id="p"></p>
-    <div class="myNetwork" id="myNetwork"></div>
-    <script>
-        //Declaring required
-                 var usedNodes= [];
-                 var usedNodesForNeighbouring= [];
-                 var allEdges= [];
-                 let neighbours = [
-	[],[],[],[],[]
-	];
-                 let edgesSets= [];
-                 let edgeCon= "{";
-                 let nodeSets= [
-        {"color": " YellowGreen","font": {"color": "black"}, id: 0, label: '0'},
-        {"color": "YellowGreen","font": {"color": "black"},id: 1, label: '1'},
-        {"color": "YellowGreen","font": {"color": "black"},id: 2, label: '2'},
-        {"color": "YellowGreen","font": {"color": "black"},id: 3, label: '3'},
-        {"color": "YellowGreen","font": {"color": "black"},id: 4, label: '4'},
-];
-
-
-
-//Creating Edges
-                let randomVertice1= randomNumber(0, nodeSets.length);
-                let randomVertice2= randomNumber(0,nodeSets.length);
-
-                while(randomVertice1== randomVertice2){
-    randomVertice2= randomNumber(0,nodeSets.length);
-}
-
-                edgesSets.push( {from: randomVertice1, to: randomVertice2} );
-                edgeCon= edgeCon+"{" +randomVertice1 + ", " + randomVertice2 +"}" ;
-                neighbours[randomVertice1].push(randomVertice2);
-                neighbours[randomVertice2].push(randomVertice1);
-                usedNodes.push(randomVertice1);
-                usedNodes.push(randomVertice2);
-                for( let g=0; g< nodeSets.length-2; g++){
-                let randomVertice3= randomNumber(0,nodeSets.length);
-                while (usedNodes.includes(randomVertice3)){
-	              randomVertice3= randomNumber(0,nodeSets.length);
-                }
-let randomTwin= randomNumber(0,2);
-let randomNode= randomNumber(0, usedNodes.length);
-while (usedNodesForNeighbouring.includes(randomNode))
-{
-     randomNode= randomNumber(0, usedNodes.length);
-}
-usedNodes.push(randomVertice3);
-usedNodesForNeighbouring.push(randomNode);
-if( randomTwin==0){
-edgesSets.push( {from: randomVertice3, to: usedNodes[randomNode] } );
-edgeCon= edgeCon+",{" +randomVertice3 + ", " + usedNodes[randomNode]  +"}" ;
-neighbours[randomVertice3].push(usedNodes[randomNode]);
-for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++)
-{
-	  let nei= neighbours[usedNodes[randomNode]][m];
-	  edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
-	  edgeCon= edgeCon+",{" +randomVertice3 + ", " + neighbours[usedNodes[randomNode]][m] +"}" ;
-	  neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
-	  neighbours[nei].push(randomVertice3);
-}
-neighbours[usedNodes[randomNode]].push(randomVertice3);
-}
-else{
-	 for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++)
-	 {
-	  nei= neighbours[usedNodes[randomNode]][m];
-	  edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
-	  edgeCon= edgeCon+",{" +randomVertice3 + ", " + neighbours[usedNodes[randomNode]][m] +"}" ;
-	  neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
-	  neighbours[nei].push(randomVertice3);
+          p{
+              color:blue;
+              font-size: x-large;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              font-style: italic;
+          }
+      .stt{
+        color:blue;
+              font-size: x-large;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              font-style: italic;
+      }
+          .myNetwork {
+               width: 60%;
+              height: 500px;
+              background-color: #000000;
+              border: 1px solid DarkSeaGreen;
+              position: relative;
+              float: left;
+              margin-left: 20%;
+          }
+      .myNetwork1 {
+        width: 60%;
+         height: 500px;
+         background-color: #000000;
+         border: 1px solid DarkSeaGreen;
+         float: left;
+         margin-left: 20%;
+       }
+       .myNetwork2 {
+      width: 60%;
+       height: 500px;
+       background-color: #000000;
+       border: 1px solid DarkSeaGreen;
+       position: relative;
+       float: left;
+       margin-left: 20%;
      }
-}
-edgeCon= edgeCon+ "}";
-}
-
-
-                document.getElementById('p').textContent += "Below is the Graph with 5 nodes and " + edgesSets.length +" edges";
-
-// Setting up nodes and edges to display
-                var nodes = new vis.DataSet(nodeSets);
-                var edges = new vis.DataSet(edgesSets);
-
-
-
-// create a network
-               var container = document.getElementById('myNetwork');
-    // provide the data in the vis format
-               var data = {
-        nodes: nodes,
-        edges: edges
-    };
-
-
-               var options = {
-    physics:{
-    enabled: true,
-    barnesHut: {
-      theta: 0.5,
-      gravitationalConstant: -2000,
-      centralGravity: 0.3,
-      springLength: 95,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 0
-    },
-    forceAtlas2Based: {
-      theta: 0.5,
-      gravitationalConstant: -50,
-      centralGravity: 0.01,
-      springConstant: 0.08,
-      springLength: 100,
-      damping: 0.4,
-      avoidOverlap: 0
-    },
-    repulsion: {
-      centralGravity: 0.2,
-      springLength: 200,
-      springConstant: 0.05,
-      nodeDistance: 100,
-      damping: 0.09
-    },
-    hierarchicalRepulsion: {
-      centralGravity: 0.0,
-      springLength: 100,
-      springConstant: 0.01,
-      nodeDistance: 120,
-      damping: 0.09,
-      avoidOverlap: 0
-    },
-    maxVelocity: 50,
-    minVelocity: 0.1,
-    solver: 'barnesHut',
-    stabilization: {
-      enabled: true,
-      iterations: 1000,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true
-    },
-    timestep: 0.5,
-    adaptiveTimestep: true,
-    wind: { x: 0, y: 0 }
+      </style>
+  </head>
+  <body>
+      <h1>Generate Random Co-graphs using Twin Operation</h1>
+    <p id="p"></p>
+      <div class="myNetwork" id="myNetwork"></div>
+      <h2>Cotree of Generated Co-Graph</h2>
+      <div class="myNetwork1" id="myNetwork1"></div>
+    <h2>Complement of Generated Co-graph</h2>
+    <div class="myNetwork2" id="myNetwork2"></div>
+  
+  <div id = "config"></div>
+  <table>
+  <!-- here goes our data! -->
+  </table>
+  <script type="text/javascript">
+  
+  let usedId=[];
+  let leftUsedId=[];
+  let rightUsedId=[];
+  
+  
+  
+  let tableforCases=[];
+  let countforTrees= 1000;
+  let cotreenodes= [];
+  let cotreeEdges=[];
+  let dumpyNodes=[];
+  let coordinates=['','','','',''];
+  let copyOfCoordinate=[];
+  let usedForMD=[];
+  
+  cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: countforTrees, label: "Join"});
+  usedId.push(countforTrees);
+  
+  
+  let leftChild= [];
+  let L1= [];
+  let R=[];
+  let R1=[];
+  let LL=[];
+  let LR=[];
+  let LL1=[];
+  let LR1=[];
+  let RR=[];
+  let RL=[];
+  let RR1=[];
+  let RL1=[];
+  
+  var nodeSets= createNodes();
+  var nodes = new vis.DataSet(nodeSets);
+  var graphSet= createEdges(nodeSets);
+  document.getElementById('p').textContent += "Below is the Graph with 5 nodes and " + graphSet.edges.length +" edges";
+  var edges= new vis.DataSet(graphSet.edges);
+  var options = createOptions();
+  var data = {
+          nodes: nodes,
+          edges: edges
+      };
+  var container = document.getElementById('myNetwork');
+  var network = new vis.Network(container, data, options);
+  
+  var data2 = {
+          nodes: cotreenodes,
+          edges: cotreeEdges
+      };
+  
+  var options2= optionforHeirachy();
+  
+  
+  var container55 = document.getElementById('myNetwork1');
+  var network2= new vis.Network(container55, data2, options2);
+  
+  console.log(generateMDofCotree( graphSet));
+  f(graphSet);
+  
+  console.log(tableforCases);
+  var smallestM = tableforCases[0].Metric;
+  
+  for(var i=1; i<tableforCases.length; i++){
+      if(tableforCases[i].Mertric < smallestM){
+          smallestM = tableforCases[i].Metric;
+      }
   }
-}
-
-//Random Function
-               function randomNumber(min, max){
-    const r = Math.random()*(max-min) + min
-    return Math.floor(r)
-}
-
-// initialize your network!
-              var network = new vis.Network(container, data, options);
-     </script>
-</body> 
-</html>
+  
+  console.log(smallestM);
+  // Create Nodes;
+  function createNodes(){
+      let nodeSets= [
+          {"color": " YellowGreen","font": {"color": "black"}, id: 0, label: '0'},
+          {"color": "YellowGreen","font": {"color": "black"},id: 1, label: '1'},
+          {"color": "YellowGreen","font": {"color": "black"},id: 2, label: '2'},
+          {"color": "YellowGreen","font": {"color": "black"},id: 3, label: '3'},
+          {"color": "YellowGreen","font": {"color": "black"},id: 4, label: '4'},
+      ];
+    return nodeSets;
+  }
+  
+  //Create Random numbers
+  function randomNumber(min, max){
+      const r = Math.random()*(max-min) + min
+      return Math.floor(r)
+  }
+  
+  //Create Edges
+  function createEdges(nodeSets){
+        var usedNodes= [];
+        var twinType= "Join";
+        var usedNodesForNeighbouring= [];
+        let neighbours = [
+        [],[],[],[],[]
+        ];
+        let edgesSets= [];
+        let randomVertice1= 0;
+        let randomVertice2= 1;
+            leftChild.push({ node: randomVertice1,
+        twinType: twinType,
+        twin: randomVertice2});
+        L1.push(randomVertice1);
+        R.push({ node: randomVertice2,
+        twinType: twinType,
+        twin: randomVertice1});
+        R1.push(randomVertice2);
+        //while(randomVertice1== randomVertice2)
+        //{
+            //randomVertice2= randomNumber(0,nodeSets.length);
+        //}
+        edgesSets.push( {from: randomVertice1, to: randomVertice2} );
+        neighbours[randomVertice1].push(randomVertice2);
+        neighbours[randomVertice2].push(randomVertice1);
+        usedNodes.push(randomVertice1);
+        usedNodes.push(randomVertice2);
+        //console.log("First node" +randomVertice1);
+        //console.log("Second node"+ randomVertice2);
+    
+        for( let g=0; g< nodeSets.length-2; g++){
+    
+        let randomVertice3= randomNumber(0,nodeSets.length);
+    
+        while (usedNodes.includes(randomVertice3))
+        {
+        randomVertice3= randomNumber(0,nodeSets.length);
+        }
+        let randomTwin= randomNumber(0,2);
+        if( randomTwin==0)
+        {
+           twinType= "Join";
+        }
+        else{
+         twinType= "Union";
+        }
+        let randomNode= randomNumber(0, usedNodes.length);
+    
+        while (usedNodesForNeighbouring.includes(randomNode))
+        {
+        randomNode= randomNumber(0, usedNodes.length);
+        }
+        //console.log(" twining with "+ usedNodes[randomNode]);
+            //console.log(" Adding vertice "+ randomVertice3);
+        if( L1.includes(usedNodes[randomNode]))
+        {
+        leftChild.push({ node: randomVertice3,
+        twinType: twinType,
+        twin: usedNodes[randomNode]});
+        L1.push(randomVertice3);
+        }
+        else {
+          R.push({ node: randomVertice3,
+        twinType: twinType,
+        twin: usedNodes[randomNode]});
+        R1.push(randomVertice3);
+        }
+        usedNodes.push(randomVertice3);
+        usedNodesForNeighbouring.push(randomNode);
+  
+        if( randomTwin==0){
+        edgesSets.push( {from: randomVertice3, to: usedNodes[randomNode] } );
+        neighbours[randomVertice3].push(usedNodes[randomNode]);
+        //console.log("True Twin added neighbour " + randomVertice3 + " is " + usedNodes[randomNode]);
+        for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++){
+          let nei= neighbours[usedNodes[randomNode]][m];
+          edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
+          neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
+          neighbours[nei].push(randomVertice3);
+          }
+          neighbours[usedNodes[randomNode]].push(randomVertice3);
+         }
+         else{
+        // console.log("False Twin" );
+         for (  let m= 0; m < neighbours[usedNodes[randomNode]].length; m++)
+         {
+          nei= neighbours[usedNodes[randomNode]][m];
+          edgesSets.push( {from: randomVertice3, to: neighbours[usedNodes[randomNode]][m] } );
+  
+          neighbours[randomVertice3].push(neighbours[usedNodes[randomNode]][m]);
+          neighbours[nei].push(randomVertice3);
+         }
+     
+          }
+          }
+          //console.log(leftChild);
+        //console.log(R);
+          generateCotree(leftChild, R, L1, R1, ++countforTrees);
+         graphSet= {
+            edges: edgesSets,
+            nodes:   nodeSets,
+            neighbours: neighbours
+            }
+         return graphSet;
+  }
+  
+  
+  
+  function optionforHeirachy(){
+        var options = {
+          // only the options that have shorthand notations are shown.
+  
+        layout: {
+      randomSeed: undefined,
+      improvedLayout:true,
+      clusterThreshold: 150,
+      hierarchical: {
+        enabled:true,
+        levelSeparation: 150,
+        nodeSpacing: 100,
+        treeSpacing: 200,
+        blockShifting: true,
+        edgeMinimization: true,
+        parentCentralization: true,
+        direction: 'UD',        // UD, DU, LR, RL
+        sortMethod: 'directed',  // hubsize, directed
+        shakeTowards: 'leaves'  // roots, leaves
+      }
+    },
+  
+          physics:{
+          enabled: true,
+          barnesHut: {
+            theta: 0.5,
+            gravitationalConstant: -2000,
+            centralGravity: 0.3,
+            springLength: 95,
+            springConstant: 0.04,
+            damping: 0.09,
+            avoidOverlap: 0
+          },
+          forceAtlas2Based: {
+            theta: 0.5,
+            gravitationalConstant: -50,
+            centralGravity: 0.01,
+            springConstant: 0.08,
+            springLength: 100,
+            damping: 0.4,
+            avoidOverlap: 0
+          },
+          repulsion: {
+            centralGravity: 0.2,
+            springLength: 200,
+            springConstant: 0.05,
+            nodeDistance: 100,
+            damping: 0.09
+          },
+          hierarchicalRepulsion: {
+            centralGravity: 0.0,
+            springLength: 100,
+            springConstant: 0.01,
+            nodeDistance: 120,
+            damping: 0.09,
+            avoidOverlap: 0
+          },
+          maxVelocity: 50,
+          minVelocity: 0.1,
+          solver: 'barnesHut',
+          stabilization: {
+            enabled: true,
+            iterations: 1000,
+            updateInterval: 100,
+            onlyDynamicEdges: false,
+            fit: true
+          },
+          timestep: 0.5,
+          adaptiveTimestep: true,
+          wind: { x: 0, y: 0 }
+          }
+        }
+        return options;
+  }
+  
+  
+  
+  // create options
+  function createOptions()
+  {
+         var options = {
+          physics:{
+          enabled: true,
+          barnesHut: {
+            theta: 0.5,
+            gravitationalConstant: -2000,
+            centralGravity: 0.3,
+            springLength: 95,
+            springConstant: 0.04,
+            damping: 0.09,
+            avoidOverlap: 0
+          },
+          forceAtlas2Based: {
+            theta: 0.5,
+            gravitationalConstant: -50,
+            centralGravity: 0.01,
+            springConstant: 0.08,
+            springLength: 100,
+            damping: 0.4,
+            avoidOverlap: 0
+          },
+          repulsion: {
+            centralGravity: 0.2,
+            springLength: 200,
+            springConstant: 0.05,
+            nodeDistance: 100,
+            damping: 0.09
+          },
+          hierarchicalRepulsion: {
+            centralGravity: 0.0,
+            springLength: 100,
+            springConstant: 0.01,
+            nodeDistance: 120,
+            damping: 0.09,
+            avoidOverlap: 0
+          },
+          maxVelocity: 50,
+          minVelocity: 0.1,
+          solver: 'barnesHut',
+          stabilization: {
+            enabled: true,
+            iterations: 1000,
+            updateInterval: 100,
+            onlyDynamicEdges: false,
+            fit: true
+          },
+          timestep: 0.5,
+          adaptiveTimestep: true,
+          wind: { x: 0, y: 0 }
+          }
+        }
+        return options;
+  }
+  
+  // function generatCotree
+  
+  function generateCotree(leftChild, R, L1, R1, countforTrees)
+  {            	let thisCount= countforTrees;
+          let LL=[];
+          let LR=[];
+          let LL1=[];
+          let LR1=[];
+          let RR=[];
+          let RL=[];
+          let RR1=[];
+          let RL1=[];
+        if(leftChild.length>2){
+         LL.push(leftChild[0]);
+         LL1.push(L1[0]);
+           LR.push(leftChild[1]);
+         LR1.push(L1[1]);
+         for( let i=2; i< leftChild.length; i++)
+         {
+            if(LL1.includes(leftChild[i].twin))
+          {
+          LL.push(leftChild[i]);
+          LL1.push(L1[i]);
+          }
+          else
+          {
+          LR.push(leftChild[i]);
+          LR1.push(L1[i]);
+          }
+        }
+        cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: leftChild[1].twinType});
+        cotreeEdges.push( {from: thisCount-1, to:  thisCount} );
+        usedId.push(thisCount);
+        generateCotree(LL, LR, LL1, LR1, ++countforTrees);
+          }
+        else{ 
+          if(leftChild.length==2)
+          {
+           cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: leftChild[1].twinType});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: leftChild[0].node, label: leftChild[0].node.toString()});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: leftChild[1].node, label: leftChild[1].node.toString()});
+           usedId.push(thisCount);
+           cotreeEdges.push( {from: thisCount-1, to:  thisCount} );
+           cotreeEdges.push( {from: thisCount, to: leftChild[0].node } );
+           cotreeEdges.push( {from: thisCount, to: leftChild[1].node } );
+        }
+        else{
+             cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: leftChild[0].node, label: leftChild[0].node.toString()});
+             cotreeEdges.push( {from: thisCount-1, to:  leftChild[0].node} );
+        }
+        }
+        if(R.length>2){
+         RR.push(R[0]);
+         RR1.push(R1[0]);
+           RL.push(R[1]);
+         RL1.push(R1[1]);
+         for( let i=2; i< R.length; i++)
+         {
+            if(RR1.includes(R[i].twin))
+          {
+          RR.push(R[i]);
+          RR1.push(R1[i]);
+          }
+          else
+          {
+          RL.push(R[i]);
+          RL1.push(R1[i]);
+          }
+        }
+        if(thisCount==1001){
+           let oldCount= thisCount-1;
+           countforTrees= thisCount+1000;
+           thisCount=countforTrees;
+           cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: R[1].twinType});
+           usedId.push(thisCount);
+           cotreeEdges.push( {from: oldCount, to:  thisCount} );
+           generateCotree(RR, RL, RR1, RL1, ++countforTrees);
+        }
+        else{
+        cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: R[1].twinType});
+        usedId.push(thisCount);
+        cotreeEdges.push( {from: thisCount-1, to:  thisCount} );
+        generateCotree(RR, RL, RR1, RL1, ++countforTrees);
+        }
+          }
+        else{
+          if(R.length==2)
+          {
+            if(thisCount==1001){
+            let oldCount= thisCount-1;
+            countforTrees= thisCount+1000;
+          thisCount=countforTrees;
+          usedId.push(thisCount)
+            cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: R[1].twinType});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: R[0].node, label: R[0].node.toString()});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: R[1].node, label: R[1].node.toString()});
+           cotreeEdges.push( {from: oldCount, to:  thisCount} );
+           cotreeEdges.push( {from: thisCount, to: R[0].node } );
+           cotreeEdges.push( {from: thisCount, to: R[1].node } );
+        }else{
+           cotreenodes.push({"color":  " Red","font": {"color": "black"}, id: thisCount, label: R[1].twinType});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: R[0].node, label: R[0].node.toString()});
+           cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: R[1].node, label: R[1].node.toString()});
+           cotreeEdges.push( {from: thisCount-1, to:  thisCount} );
+           usedId.push(thisCount)
+           cotreeEdges.push( {from: thisCount, to: R[0].node } );
+           cotreeEdges.push( {from: thisCount, to: R[1].node } );
+        }
+        }
+        else{
+             cotreenodes.push({"color": " YellowGreen","font": {"color": "black"}, id: R[0].node, label: R[0].node.toString()});
+             cotreeEdges.push( {from: thisCount-1, to:  R[0].node} );
+        }
+        }
+        return countforTrees;
+  
+  }
+  
+  //function separateId
+  function separateId()
+  {
+       for(let i= 0; i< usedId.length; i++)
+     {
+       if(usedId[i]<2000 && usedId[i]!=1000 && !leftUsedId.includes(usedId[i])){
+       leftUsedId.push(usedId[i]);
+       }
+       if(usedId[i]>=2000  && !rightUsedId.includes(usedId[i])){
+       rightUsedId.push(usedId[i]);
+       }
+     }
+  }
+  
+  
+  function findIndexOfUsedId(id)
+  {
+       //let index=0;
+       for( let i=0; i< cotreenodes.length; i++)
+     {
+      if(id== cotreenodes[i].id)
+      {
+          return i;
+      }
+     }
+   }
+  
+  
+  //function find metric dimension
+  function generateMDofCotree(g)
+  {
+  //console.log(g);
+    let allPossibleMetric= [];
+    let allCoordinates= [
+    [],[],[],[],[]
+        ];
+    
+    let metricDimension= 1000;
+    let mdset='';
+    let expr='';
+    let set = [ '0', '1', '2' , '3', '4'];
+         let powerset= printPowerSet(set, 5);
+    let mD=[];
+        for(let y=0; y< g.nodes.length; y++){
+           let nei= g.neighbours[y];
+          for( let i=0; i< g.nodes.length; i++)
+          {
+             if(nei.includes(i))
+             {
+            allCoordinates[y].push('1');
+             }
+             else {
+             if( y==i){
+             allCoordinates[y].push('0');
+             } else 
+             allCoordinates[y].push('2');
+            }
+          }
+        }
+      for(let i=0;i< powerset.length; i++)
+      {
+       for(let k=0; k< allCoordinates.length; k++){
+           for( let j=0; j< powerset[i].length; j++){
+            expr= expr+ allCoordinates[powerset[i][j]][k];
+            }
+          mD.push(expr);
+          expr='';
+         }
+          if(find_duplicate_in_array(mD).result.length==0)
+          {
+          allPossibleMetric.push(powerset[i]);
+          }
+        mD=[];
+        }
+      for( let h=0; h< allPossibleMetric.length; h++)
+      {
+      if(allPossibleMetric[h].length< metricDimension)
+      {
+      metricDimension= allPossibleMetric[h].length;
+      mdset= allPossibleMetric[h];
+      }
+      }
+      var container5 = document.createElement("div");
+          container5.setAttribute("class", "stt");
+      document.body.appendChild(container5);
+          container5.innerHTML += 'Metric Dimension is ' +metricDimension + '.          Resolving set is '+ mdset;
+      return metricDimension;
+  }
+  
+  function find_duplicate_in_array(array){
+  const count = {}
+  let result = []
+  let returnV={};
+  
+  array.forEach(item => {
+      if (count[item]) {
+         count[item] +=1
+         return
+      }
+      count[item] = 1
+  })
+  
+  for (let prop in count){
+      if (count[prop] >=2){
+          result.push(prop)
+      }
+  }
+  
+  //console.log(count)
+  returnV= {
+  count: count,
+  result: result
+  };
+  return returnV;
+  
+  }
+  
+  
+  
+  //function to create all
+  function f(g){
+       var allEdges= [];
+       var neighbours1= [];
+      for(let p=0; p< g.neighbours.length; p++){
+      neighbours1.push([...g.neighbours[p]]);
+      }
+       //console.log(neighbours1);
+       let edgesSets= g.edges;
+       let edgeSets1= [];
+         let egdeSets2=[];
+       for ( let f=0; f< g.nodes.length; f++)
+        {
+           for (let f1= f+1; f1< g.nodes.length; f1++)
+           {
+              allEdges.push( {from: f, to: f1} );
+           }
+        }
+      for ( let b=0; b<edgesSets.length; b++)
+      {
+        edgeSets1[b]= edgesSets[b];
+        egdeSets2[b]= edgesSets[b];
+      }
+      var edgeSetde=[];
+    var complementEdge= [];
+    var count1=0; var index=0;
+  
+    for ( let a= 0; a< allEdges.length; a++)
+    {  
+      for ( let a1= 0; a1< edgeSets1.length; a1++)
+        {
+             if( (edgeSets1[a1].from == allEdges[a].from && edgeSets1[a1].to == allEdges[a].to) || (edgeSets1[a1].from == allEdges[a].to && edgeSets1[a1].to == allEdges[a].from))
+         { count1++;
+       }
+       }
+       //console.log(count1);
+       if(count1 ==0){
+       edgeSetde.push(a);
+       }
+       count1=0;
+       }
+    for( var count=0; count< edgeSetde.length; count++)
+    {
+    complementEdge.push(allEdges[edgeSetde[count]]);
+    }
+    
+    var allcoverted= [];
+    var number = complementEdge.length;
+    var value= Math.pow(2, complementEdge.length);
+   // console.log(value-1);
+     for ( let i= 0; i<= value-1; i++)
+    {
+    let converted= i.toString(2);
+    if( converted.length< number){
+    for ( let j= converted.length ; j< number; j++)
+    {
+    converted = '0'+ converted; 
+    }
+    }
+    allcoverted.push((converted.split('')));
+    }
+  
+    //console.log(  complementEdge);
+    console.log(allcoverted);
+    var edges2 = new vis.DataSet(complementEdge);
+    var container1 = document.getElementById('myNetwork2');
+    var data1 = {
+          nodes: nodes,
+          edges: edges2
+      };
+    var network2= new vis.Network(container1, data1, options);
+    
+    
+    let countm=0;
+    for( var count2=0; count2< allcoverted.length ; count2++)
+    {
+    for ( var count3=0; count3< allcoverted[count2].length; count3++)
+    {
+             if(allcoverted[count2][count3]=='1'){
+         countm++;
+         neighbours1[complementEdge[count3].from].push(complementEdge[count3].to);
+         neighbours1[complementEdge[count3].to].push(complementEdge[count3].from);
+         edgeSets1.push({from: complementEdge[count3].from, to: complementEdge[count3].to, color: {
+        color:'Red',
+        highlight:'#848484',
+        hover: '#848484',
+        inherit: 'from',
+        opacity:1.0
+      } });
+      }
+      }
+      
+    var container2 = document.createElement("div");
+      container2.setAttribute("class", "myNetwork2");
+    document.body.appendChild(container2);
+    var edges1 = new vis.DataSet(edgeSets1);
+    var data2 = {
+          nodes: nodes,
+          edges: edges1
+      };
+    var network1= new vis.Network(container2, data2, options);
+    
+    let g1={
+    edges: edgeSets1,
+    neighbours: neighbours1,
+    nodes: g.nodes
+    };
+    
+    let GMD= generateMDofCotree( g1);
+    tableforCases.push({
+    edgesAdded: countm, 
+    Metric: GMD,
+    totalEdges: edgeSets1.length
+    });
+    edgeSets1=[];
+    for ( let b=0; b<edgesSets.length; b++)
+    {
+       edgeSets1[b]= edgesSets[b];
+       
+    }
+    //console.log( neighbours1);
+    neighbours1= [];
+    //console.log( neighbours1);
+      for(let p=0; p< g.neighbours.length; p++){
+      neighbours1.push([...g.neighbours[p]]);
+      }
+    //console.log( neighbours1);
+    countm=0;
+    }
+  }
+  
+  
+  
+  
+  
+  
+    function printPowerSet(set, set_size)
+      {
+      let powerset=[];
+      let se='';
+          /*
+           * set_size of power set of a set with set_size n is (2**n -1)
+           */
+          var pow_set_size = parseInt(Math.pow(2, set_size));
+          var counter, j;
+   
+          /*
+           * Run from counter 000..0 to 111..1
+           */
+          for (counter = 0; counter < pow_set_size; counter++)
+          {
+              for (j = 0; j < set_size; j++)
+              {
+               
+                  /*
+                   * Check if jth bit in the counter is set If set then print jth element from set
+                   */
+                  if ((counter & (1 << j)) > 0){
+                      //document.write(set[j]);
+             se= se+set[j];
+  
+             }
+              }
+        if(se.length>=2)
+        powerset.push(se);
+        se='';
+              //document.write("<br/>");
+          }
+      return powerset;
+      }
+   
+   
+  
+  function generateTableHead(table, data) {
+    let thead = table.createTHead();
+    let row = thead.insertRow();
+    for (let key of data) {
+      let th = document.createElement("th");
+      let text = document.createTextNode(key);
+      th.appendChild(text);
+      row.appendChild(th);
+    }
+  }
+  
+  function generateTable(table, data) {
+    for (let element of data) {
+      let row = table.insertRow();
+      for (key in element) {
+        let cell = row.insertCell();
+        let text = document.createTextNode(element[key]);
+        cell.appendChild(text);
+      }
+    }
+  }
+  
+  
+  const sort_by = (field, reverse, primer) => {
+  
+    const key = primer ?
+      function(x) {
+        return primer(x[field])
+      } :
+      function(x) {
+        return x[field]
+      };
+  
+    reverse = !reverse ? 1 : -1;
+  
+    return function(a, b) {
+      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+    }
+  }
+  
+  
+  console.log(tableforCases.sort(sort_by('edgesAdded', true, parseInt)));
+  
+  
+  let table = document.querySelector("table");
+  let datal = Object.keys(tableforCases[0]);
+  generateTableHead(table, datal);
+  generateTableHead(table, datal);
+  generateTable(table, tableforCases);
+      // Driver program to test printPowerSet
+  </script>
+  </body>
+  </html>
